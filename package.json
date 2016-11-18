@@ -1,6 +1,6 @@
 {
   "name": "runscope-api-wrapper",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "runscope-api-wrapper",
   "main": "build/index.js",
   "scripts": {
