@@ -35,7 +35,7 @@ gulp.task('build:lint', () => {
 gulp.task('build:babel', ['build:lint'], callback => {
   gulp.src(['src/**/*.js'], {base: './src'})
     .pipe(sourcemaps.init())
-    .pipe(babel({presets: ['es2015']}))
+    .pipe(babel())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('build'))
     .on('end', () => callback());

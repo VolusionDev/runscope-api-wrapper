@@ -101,7 +101,7 @@ describe('ApiServiceMonitor', () => {
           .then(testInfoCollection => {
             expect(testInfoCollection.length > 0).to.equal(true);
 
-            expect(testInfoCollection[0].id).to.equal(testData.key);
+            expect(testInfoCollection[0].id).to.equal('');
             expect(testInfoCollection[0].name).to.equal(testData.name);
             expect(testInfoCollection[0].success).to.equal(SuccessTypes.notRun);
             expect(testInfoCollection[0].results).to.deep.equal([]);
@@ -140,7 +140,7 @@ describe('ApiServiceMonitor', () => {
       return apiMonitor.getAllTestInformationInBucketByTestIds(token, bucketId, [versionTestId])
         .then(testInfoCollection => {
           expect(testInfoCollection.length > 0).to.equal(true);
-          expect(testInfoCollection[0].id).to.equal(testInfo.key);
+          expect(testInfoCollection[0].id).to.equal('');
           expect(testInfoCollection[0].success).to.equal(SuccessTypes.notRun);
           expect(testInfoCollection[0].results).to.deep.equal([]);
           expect(testInfoCollection[0].uri).to.equal('');

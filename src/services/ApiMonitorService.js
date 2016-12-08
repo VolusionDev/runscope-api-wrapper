@@ -37,23 +37,20 @@ const transformTheRuns = collection => {
   return result;
 };
 
-class ApiMonitorService {
-  static findByName(dataArray, bucketName) {
-    if (isArrayNullUndefinedOrEmpty(dataArray) ||
-      isStringNullUndefinedOrEmpty(bucketName)) {
-      return null;
-    }
-
-    for (let i = 0; i < dataArray.length; i++) {
-      const item = dataArray[i];
-      if (item.name.toLowerCase() === bucketName.toLowerCase()) {
-        return item;
-      }
-    }
-
+const findByName = (dataArray, bucketName) => {
+  if (isArrayNullUndefinedOrEmpty(dataArray) ||
+    isStringNullUndefinedOrEmpty(bucketName)) {
     return null;
   }
 
+  return dataArray.find(entity => {
+      if (entity.name.toLowerCase() === bucketName.toLowerCase()){
+        return entity;
+      }
+  });
+};
+
+class ApiMonitorService {
   isMatch(testInfo, testResult) {
     if (util.isNullOrUndefined(testInfo) && util.isNullOrUndefined(testResult)) {
       return true;
@@ -339,7 +336,7 @@ class ApiMonitorService {
     }
 
     return this.getBuckets(token).then(data => {
-      const bucketInfo = ApiMonitorService.findByName(data, bucketName);
+      const bucketInfo = findByName(data, bucketName);
 
       if (bucketInfo === null) {
         return Promise.reject(new Error(`cannot find a match for '${bucketName}'`));
