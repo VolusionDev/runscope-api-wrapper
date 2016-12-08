@@ -1,9 +1,9 @@
 const expect = require('chai').expect;
 const TestInfo = require('./../../src/models/TestInfo');
 const uuid = require('uuid');
+
 describe('When using testinfo', () => {
   it('and init with all null', () => {
-
     const t = new TestInfo(null, null, null, null, null, null, null);
     console.log(t);
 
@@ -18,9 +18,7 @@ describe('When using testinfo', () => {
   });
 
   it('and init without any', () => {
-
     const t = new TestInfo();
-    console.log(t);
 
     expect(t.name).to.equal('');
     expect(t.id).to.equal('');
@@ -37,7 +35,6 @@ describe('When using testinfo', () => {
     const expectedTriggerUri = `http://api.runscope.com/radar/${expectedTriggerId}/trigger`;
 
     const t = new TestInfo(null, null, null, null, null, null, expectedTriggerUri);
-    console.log(t);
 
     expect(t.name).to.equal('');
     expect(t.id).to.equal('');
@@ -54,7 +51,6 @@ describe('When using testinfo', () => {
     const expectedTriggerUri = `https://api.runscope.com/radar/${expectedTriggerId}/trigger`;
 
     const t = new TestInfo(null, null, null, null, null, null, expectedTriggerUri);
-    console.log(t);
 
     expect(t.name).to.equal('');
     expect(t.id).to.equal('');

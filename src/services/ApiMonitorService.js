@@ -44,76 +44,63 @@ const findByName = (dataArray, bucketName) => {
   }
 
   return dataArray.find(entity => {
-      if (entity.name.toLowerCase() === bucketName.toLowerCase()){
-        return entity;
-      }
+    return entity.name.toLowerCase() === bucketName.toLowerCase();
   });
 };
 
+const convertToTestInfo = (bucketId, testData) => {
+  const testInfo = new TestInfo(
+    testData.name,
+    testData.id,
+    testData.schedules,
+    SuccessTypes.notRun,
+    service.getTestResultsInBucketPageUri(bucketId, testData.id),
+    testData.default_environment_id,
+    testData.trigger_url
+  );
+
+  return testInfo;
+};
+
+const convertToTestResult = (testResultData) => {
+  const testResult = new TestResult();
+  testResult.testId = testResultData.test_id;
+  testResult.testResultId = testResultData.test_run_id;
+  testResult.success = testResultData.result;
+  testResult.runTick = testResultData.started_at;
+
+  return testResult;
+};
+
+const convertToTestResultCollection = (testResultDataCollection) => {
+  const collection = [];
+
+  if (isArrayNullUndefinedOrEmpty(testResultDataCollection)) {
+    return collection;
+  }
+
+  for (let i = 0; i < testResultDataCollection.length; i++) {
+    collection.push(convertToTestResult(testResultDataCollection[i]));
+  }
+
+  return collection;
+};
+
+const convertToTestInfoCollection = (bucketId, testsDataCollection) => {
+  const collection = [];
+
+  if (isArrayNullUndefinedOrEmpty(testsDataCollection)) {
+    return collection;
+  }
+
+  for (let i = 0; i < testsDataCollection.length; i++) {
+    collection.push(convertToTestInfo(bucketId, testsDataCollection[i]));
+  }
+
+  return collection;
+};
+
 class ApiMonitorService {
-  isMatch(testInfo, testResult) {
-    if (util.isNullOrUndefined(testInfo) && util.isNullOrUndefined(testResult)) {
-      return true;
-    }
-
-    if (util.isNullOrUndefined(testInfo) !== util.isNullOrUndefined(testResult)) {
-      return false;
-    }
-
-    return testInfo.id === testResult.testId;
-  }
-
-  convertToTestInfo(bucketId, testData) {
-    const testInfo = new TestInfo(
-      testData.name,
-      testData.id,
-      testData.schedules,
-      SuccessTypes.notRun,
-      service.getTestResultsInBucketPageUri(bucketId, testData.id),
-      testData.default_environment_id,
-      testData.trigger_url
-    );
-
-    return testInfo;
-  }
-
-  convertToTestResult(testResultData) {
-    const testResult = new TestResult();
-    testResult.testId = testResultData.test_id;
-    testResult.testResultId = testResultData.test_run_id;
-    testResult.success = testResultData.result;
-    testResult.runTick = testResultData.started_at;
-
-    return testResult;
-  }
-
-  convertToTestResultCollection(testResultDataCollection) {
-    const collection = [];
-
-    if (isArrayNullUndefinedOrEmpty(testResultDataCollection)) {
-      return collection;
-    }
-
-    for (let i = 0; i < testResultDataCollection.length; i++) {
-      collection.push(this.convertToTestResult(testResultDataCollection[i]));
-    }
-
-    return collection;
-  }
-
-  convertToTestInfoCollection(bucketId, testsDataCollection) {
-    const collection = [];
-
-    if (isArrayNullUndefinedOrEmpty(testsDataCollection)) {
-      return collection;
-    }
-
-    for (let i = 0; i < testsDataCollection.length; i++) {
-      collection.push(this.convertToTestInfo(bucketId, testsDataCollection[i]));
-    }
-
-    return collection;
-  }
 
   /**
    *
@@ -159,7 +146,7 @@ class ApiMonitorService {
     return service.getBucketTestsLists(token, bucketId)
       .then(response => {
         const data = JSON.parse(response.body).data;
-        return Promise.resolve(this.convertToTestInfoCollection(bucketId, data));
+        return Promise.resolve(convertToTestInfoCollection(bucketId, data));
       })
       .catch(error => Promise.reject(error));
   }
@@ -183,7 +170,7 @@ class ApiMonitorService {
       .then(response => {
         const data = JSON.parse(response.body).data;
 
-        const testInfo = this.convertToTestInfo(bucketId, data);
+        const testInfo = convertToTestInfo(bucketId, data);
         return Promise.resolve(testInfo);
       }).catch(error => Promise.reject(error));
   }
@@ -205,7 +192,7 @@ class ApiMonitorService {
     return service.getTestResultsForTestInBucket(token, bucketId, testId)
       .then(response => {
         const dataTestResultCollection = JSON.parse(response.body).data;
-        const testInfo = this.convertToTestResultCollection(dataTestResultCollection);
+        const testInfo = convertToTestResultCollection(dataTestResultCollection);
         return Promise.resolve(testInfo);
       })
       .catch(error => Promise.reject(error));

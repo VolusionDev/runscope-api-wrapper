@@ -5,7 +5,7 @@ const TestResult = require('./TestResult.js');
  * @param {String} uri
  * @return {String}
  */
-const getTriggerId = (uri) => {
+const getTriggerId = uri => {
   const basePath = 'api.runscope.com/radar/';
   const triggerAction = '/trigger';
 
@@ -13,8 +13,7 @@ const getTriggerId = (uri) => {
     return '';
   }
 
-  const schemaAndId = uri.toLowerCase().indexOf(basePath) !== -1 &&
-  uri.toLowerCase().indexOf(triggerAction) !== -1
+  const schemaAndId = uri.toLowerCase().indexOf(basePath) !== -1 && uri.toLowerCase().indexOf(triggerAction) !== -1
     ? uri.toLowerCase().replace(basePath, '').replace(triggerAction, '')
     : '';
 
@@ -25,7 +24,9 @@ const getTriggerId = (uri) => {
   return schemaAndId.replace('https://', '').replace('http://', '');
 };
 
+
 module.exports = class TestInfo {
+
   /**
    *
    * @param {String} [name] name of the test
@@ -36,7 +37,7 @@ module.exports = class TestInfo {
    * @param {String} [defaultEnvironmentId]
    * @param {String} [triggerUri] for telling runscope, 'hey, run this test!'
    */
-  constructor (name, id, schedules, success, uri, defaultEnvironmentId, triggerUri) {
+  constructor(name, id, schedules, success, uri, defaultEnvironmentId, triggerUri) {
     this.name = name || '';
     this.results = [];
     this.id = id || '';
@@ -48,11 +49,11 @@ module.exports = class TestInfo {
     this.triggerId = getTriggerId(this.triggerUri);
   }
 
-  getHasSchedules () {
+  getHasSchedules() {
     return !(this.schedules === undefined || this.schedules === null || this.schedules.length === 0);
   }
 
-  getResultsByDescTick () {
+  getResultsByDescTick() {
     if (this.results === undefined || this.results === null || this.results.length === 0) {
       return [];
     }
@@ -64,7 +65,7 @@ module.exports = class TestInfo {
     return this.results.sort(ascSort);
   }
 
-  getMostPreviousResult () {
+  getMostPreviousResult() {
     const results = this.getResultsByDescTick();
 
     if (results.length <= 1) {
@@ -74,7 +75,7 @@ module.exports = class TestInfo {
     return results[1];
   }
 
-  getLatestResult () {
+  getLatestResult() {
     const results = this.getResultsByDescTick();
 
     if (results.length === 0) {
